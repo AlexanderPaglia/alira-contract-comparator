@@ -10,7 +10,7 @@ if (!process.env.RESEND_API_KEY) {
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const TO_EMAIL = 'contact@sproutcircle.ca';
-const FROM_EMAIL = 'onboarding@resend.dev';
+const FROM_EMAIL = 'contact@sproutcircle.ca';
 
 function getCorsHeaders() {
   const vercelUrl = process.env.VERCEL_URL;
@@ -87,4 +87,5 @@ export default async function handler(req: Request) {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
+
 }
