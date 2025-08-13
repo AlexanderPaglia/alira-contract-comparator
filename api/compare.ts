@@ -1,5 +1,5 @@
 import { GoogleGenAI, GenerateContentResponse, Type } from "@google/genai";
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 import { Ratelimit } from "@upstash/ratelimit";
 import type { ComparisonOutput } from "../types";
 
@@ -10,15 +10,22 @@ export const config = {
 if (!process.env.API_KEY) {
   throw new Error("API_KEY for Gemini is not set.");
 }
-if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
-    console.warn("Vercel KV environment variables not found. Rate limiting will be disabled.");
+if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
+  console.warn("Upstash Redis environment variables not found. Rate limiting will be disabled.");
 }
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-const ratelimit = process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN
+const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+  ? new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL!,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+    })
+  : null;
+
+const ratelimit = redis
   ? new Ratelimit({
-      redis: kv,
+      redis,
       limiter: Ratelimit.slidingWindow(5, '1 d'),
       analytics: true,
       prefix: '@alira_ratelimit',
