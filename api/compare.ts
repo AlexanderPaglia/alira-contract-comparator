@@ -91,7 +91,6 @@ const comparisonSchema = {
     error: {
         type: Type.STRING,
         description: "An error message if the input documents are not valid for comparison.",
-        optional: true
     }
   },
   required: ["executiveSummary", "agreements", "disputes", "uniqueDoc1", "uniqueDoc2"]
@@ -203,3 +202,4 @@ export default async function handler(req: Request) {
     });
   }
 }
+
