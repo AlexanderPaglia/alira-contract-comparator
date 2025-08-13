@@ -1,0 +1,6 @@
+{
+  "name": "Alira: AI Contract Comparator",
+  "description": "An AI-Powered Contract Comparator that analyzes two documents (TXT or PDF) and provides a detailed comparison of their similarities, differences, and unique clauses.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
