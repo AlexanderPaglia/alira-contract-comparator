@@ -151,7 +151,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToApp, onNav
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center text-slate-800 dark:text-gray-100 pt-20 pb-10 px-4 sm:px-8 overflow-x-hidden">
-      
       <header className="w-full max-w-5xl mb-16 sm:mb-20 text-center">
         <button 
           onClick={onNavigateHome}
@@ -224,7 +223,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToApp, onNav
               <ul className="space-y-4 md:space-y-5 w-fit mx-auto lg:mx-0">
                 {procurementBenefits.map((item, index) => (
                   <AnimatedSection 
-                    as="li" 
                     key={item.text} 
                     animationClasses={{ ...benefitItemAnimation, delayClass: `delay-${(index + 1) * 150}`}}
                   >

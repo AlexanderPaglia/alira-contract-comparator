@@ -35,6 +35,32 @@ const App: React.FC = () => {
   });
 
   const [viewMode, setViewMode] = useState<ViewMode>('landing');
+  const [viewHistory, setViewHistory] = useState<ViewMode[]>([]);
+  // Custom navigation function to push to history
+  const navigateTo = (mode: ViewMode) => {
+    setViewHistory((prev) => {
+      const newHistory = [...prev, viewMode];
+      console.log('navigateTo:', { mode, viewMode, newHistory });
+      return newHistory;
+    });
+    setViewMode(mode);
+    console.log('navigateTo: setViewMode', mode);
+  };
+
+  // Go back to previous view
+  const navigateBack = () => {
+    setViewHistory((prev) => {
+      if (prev.length === 0) {
+        console.warn('navigateBack: history empty, cannot go back', { viewMode });
+        return prev;
+      }
+      const last = prev[prev.length - 1];
+      console.log('navigateBack:', { last, prev });
+      setViewMode(last);
+      console.log('navigateBack: setViewMode', last);
+      return prev.slice(0, -1);
+    });
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -138,11 +164,22 @@ const App: React.FC = () => {
   const renderContent = () => {
     switch (viewMode) {
       case 'landing':
-        return <LandingPage onNavigateToApp={() => setViewMode('app')} onNavigateToPrivacy={() => setViewMode('privacy')} onNavigateToContact={() => setViewMode('contact')} onNavigateHome={() => setViewMode('landing')} />;
+        return <LandingPage 
+          onNavigateToApp={() => navigateTo('app')}
+          onNavigateToPrivacy={() => navigateTo('privacy')}
+          onNavigateToContact={() => navigateTo('contact')}
+          onNavigateHome={() => setViewMode('landing')}
+        />;
       case 'contact':
-        return <ContactPage onNavigateHome={() => setViewMode('landing')} onNavigateToPrivacy={() => setViewMode('privacy')} />;
+        return <ContactPage 
+          onNavigateHome={() => navigateTo('landing')}
+          onNavigateToPrivacy={() => navigateTo('privacy')}
+        />;
       case 'privacy':
-        return <PrivacyPolicyPage onNavigateHome={() => setViewMode('landing')} onNavigateToContact={() => setViewMode('contact')} />;
+        return <PrivacyPolicyPage 
+          onNavigateHome={() => navigateTo('landing')}
+          onNavigateToContact={() => navigateTo('contact')}
+        />;
       case 'app':
       default:
         return (
@@ -285,26 +322,35 @@ const App: React.FC = () => {
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-slate-50 to-blue-100 dark:from-slate-900 dark:to-indigo-950 text-slate-800 dark:text-gray-100 flex flex-col items-center transition-colors duration-300">
-      
-      <div className={`absolute top-4 left-4 sm:top-6 sm:left-6 z-50`}>
-        <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
-      </div>
-
-      <div className={`absolute top-4 right-4 sm:top-6 sm:right-6 z-50`}>
-        <button
-          onClick={() => setViewMode('contact')}
-          className="flex items-center px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-medium rounded-md shadow-sm text-slate-700 dark:text-slate-200 
-                     bg-white/70 dark:bg-slate-700/70 hover:bg-slate-200/90 dark:hover:bg-slate-600/90 backdrop-blur-sm
-                     border border-slate-300 dark:border-slate-600
-                     focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-offset-transparent focus:ring-sky-500 dark:focus:ring-sky-400
-                     transition-all duration-200"
-          aria-label="Contact Us"
-        >
-          <EnvelopeIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-0 sm:mr-1.5" />
-          <span className="hidden sm:inline">Contact Us</span>
-        </button>
-      </div>
-
+      <header className="w-full flex items-center justify-between px-4 py-4 sm:px-8 sm:py-6 z-50">
+        <div className="flex items-center space-x-2">
+          {viewMode !== 'landing' && (
+            <button 
+              onClick={navigateBack}
+              className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg shadow-sm text-sky-600 dark:text-sky-300 bg-white/80 dark:bg-slate-800/60 hover:bg-sky-100 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-sky-400 transition-transform duration-200 hover:scale-105"
+              aria-label="Go Back"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+              Back
+            </button>
+          )}
+          <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
+        </div>
+        <div>
+          <button
+            onClick={() => navigateTo('contact')}
+            className="flex items-center px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-medium rounded-md shadow-sm text-slate-700 dark:text-slate-200 
+                       bg-white/70 dark:bg-slate-700/70 hover:bg-slate-200/90 dark:hover:bg-slate-600/90 backdrop-blur-sm
+                       border border-slate-300 dark:border-slate-600
+                       focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-offset-transparent focus:ring-sky-500 dark:focus:ring-sky-400
+                       transition-all duration-200"
+            aria-label="Contact Us"
+          >
+            <EnvelopeIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-0 sm:mr-1.5" />
+            <span className="hidden sm:inline">Contact Us</span>
+          </button>
+        </div>
+      </header>
       {renderContent()}
     </div>
   );
