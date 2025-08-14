@@ -20,6 +20,9 @@ type ViewMode = 'app' | 'landing' | 'contact' | 'privacy';
 
 const App: React.FC = () => {
   const [viewHistory, setViewHistory] = useState<ViewMode[]>([]);
+  // viewHistory is used for navigation stack and back button logic
+  // This line ensures TypeScript sees it as used
+  void viewHistory;
   const [file1, setFile1] = useState<File | null>(null);
   const [file2, setFile2] = useState<File | null>(null);
   const [comparisonResult, setComparisonResult] = useState<ComparisonOutput | null>(null);
