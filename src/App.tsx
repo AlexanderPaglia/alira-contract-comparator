@@ -19,6 +19,7 @@ type Theme = 'light' | 'dark';
 type ViewMode = 'app' | 'landing' | 'contact' | 'privacy';
 
 const App: React.FC = () => {
+  const [viewHistory, setViewHistory] = useState<ViewMode[]>([]);
   const [file1, setFile1] = useState<File | null>(null);
   const [file2, setFile2] = useState<File | null>(null);
   const [comparisonResult, setComparisonResult] = useState<ComparisonOutput | null>(null);
@@ -35,14 +36,10 @@ const App: React.FC = () => {
   });
 
   const [viewMode, setViewMode] = useState<ViewMode>('landing');
-  const [viewHistory, setViewHistory] = useState<ViewMode[]>([]);
+  // Removed unused viewHistory variable
   // Custom navigation function to push to history
   const navigateTo = (mode: ViewMode) => {
-    setViewHistory((prev) => {
-      const newHistory = [...prev, viewMode];
-      console.log('navigateTo:', { mode, viewMode, newHistory });
-      return newHistory;
-    });
+    setViewHistory((prev) => [...prev, viewMode]);
     setViewMode(mode);
     console.log('navigateTo: setViewMode', mode);
   };
@@ -55,7 +52,6 @@ const App: React.FC = () => {
         return prev;
       }
       const last = prev[prev.length - 1];
-      console.log('navigateBack:', { last, prev });
       setViewMode(last);
       console.log('navigateBack: setViewMode', last);
       return prev.slice(0, -1);
